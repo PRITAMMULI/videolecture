@@ -1,24 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
-
+import Loginuser from "./component/Authetication/Loginuser";
+import Ownerlogin from "./component/Authetication/Ownerlogin";
+import PersonalInfo from "./component/Authetication/Signup/PersonalInfo";
+import Preview from "./component/Authetication/Signup/Preview";
+import RegestrationForm from "./component/Authetication/Signup/RegestrationForm";
+import UserSignup from "./component/Authetication/Signup/UserSignup";
+import Projectstate from "./component/context/Projectstate";
+import logo from "./logo.svg";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 function App() {
+  const check_out_step = [
+    {
+      name: "Regestration",
+      Component: () => <RegestrationForm />,
+    },
+    {
+      name: "Personal Information",
+      Component: () => <PersonalInfo />,
+    },
+    {
+      name: "Preview",
+      Component: () => <Preview />,
+    },
+  ];
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Router>
+        <Projectstate>
+          <Routes>
+            <Route
+              exact
+              path="/usersignup"
+              element={<UserSignup stepConfig={check_out_step} />}
+            />
+            <Route exact path="/ownerlogin" element={<Ownerlogin />} />
+            <Route exact path="/" element={<Loginuser />} />
+          </Routes>
+        </Projectstate>
+      </Router>{" "}
+    </>
   );
 }
 
