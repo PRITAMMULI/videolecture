@@ -206,6 +206,37 @@
   color: #1a42bc;
   cursor: pointer;
 }
+
+/* add a content */
+#form {
+   padding: 20px;
+  border-radius: 20px;
+  box-shadow: 3px 3px 5px 5px rgb(201, 190, 190);
+}
+
+.editicon:hover {
+  cursor: pointer;
+  color: #007bff;
+}
+
+.deleteicon:hover {
+  cursor: pointer;
+  color: #ff0000;
+}
+
+.submit_buttons {
+   justify-content: space-between;
+  display: flex;
+}
+
+.updateButton {
+  text-align: center;
+}
+
+.updateButton button {
+  border: 2px solid black;
+  width: 50%;
+}
 /* dummy css */
 .col-lg-8 {
 }

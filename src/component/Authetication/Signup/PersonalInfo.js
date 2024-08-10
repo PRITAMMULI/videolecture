@@ -30,7 +30,10 @@ function PersonalInfo() {
     nationality,
     employedstatus,
     applyingasacourseowner,
+    applyasadmin
   } = credentials;
+
+  console.log(credentials)
   useEffect(() => {
     country();
   }, []);
@@ -126,7 +129,7 @@ function PersonalInfo() {
                   </div>
                 </div>
 
-                <div className="col-lg-6">
+                <div className="col-lg-4">
                   <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">
                       Civil Status
@@ -146,7 +149,7 @@ function PersonalInfo() {
                   </div>
                 </div>
 
-                <div className="col-lg-6">
+                <div className="col-lg-4">
                   <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">
                       Applying as a course owner
@@ -156,6 +159,27 @@ function PersonalInfo() {
                       onChange={onChange}
                       name="applyingasacourseowner"
                       id="applyingasacourseowner"
+                      aria-label="Default select example"
+                    >
+                      <option selected>Open this select menu</option>
+                      <option value="yes">Yes</option>
+                      <option value="no" selected>
+                        no
+                      </option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="col-lg-4">
+                  <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">
+                      Applying as Admin
+                    </label>
+                    <select
+                      class="form-select input-filed"
+                      onChange={onChange}
+                      name="applyasadmin"
+                      id="applyasadmin"
                       aria-label="Default select example"
                     >
                       <option selected>Open this select menu</option>

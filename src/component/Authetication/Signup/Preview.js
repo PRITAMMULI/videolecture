@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ProjectContext from "../../context/ProjectContext";
 import EditIcon from "@mui/icons-material/Edit";
 
@@ -7,7 +7,7 @@ function Preview() {
   const {
     credentials,
     validateNewUser,
-     onChange,
+    onChange,
     country,
     countryname,
     imageUpload,
@@ -17,10 +17,9 @@ function Preview() {
     aadharupload,
     setAadharupload,
     errorInregestration,
-   } = context;
-
-
-  return (
+  } = context;
+ 
+   return (
     <>
       <div
         class="modal fade"
@@ -156,10 +155,10 @@ function Preview() {
                       >
                         <option selected>Open this select menu</option>
 
-                        {countryname.map((value) => {
+                        {countryname.map((value, index) => {
                           return (
                             <>
-                              <option value={value} defaultValue="india">
+                              <option value={value} key={index} defaultValue="india">
                                 {value}
                               </option>
                             </>
@@ -210,6 +209,20 @@ function Preview() {
                       </select>
                     </div>
                   </div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="exampleInputEmail1" class="form-label">
+                    Applying as a admin
+                  </label>
+                  <input
+                    type="text"
+                    value={credentials.applyasadmin}
+                    class="form-control preview-input-filled"
+                    id="applyingasacourseowner"
+                    name="applyingasacourseowner"
+                    aria-describedby="emailHelp"
+                  />
                 </div>
                 <div class="mb-3">
                   <label for="exampleInputPassword1" class="form-label">
@@ -304,9 +317,7 @@ function Preview() {
                     />
                   </div>
                   {errorInregestration.email && (
-                    <small className="text-danger">
-                      email is required
-                    </small>
+                    <small className="text-danger">email is required</small>
                   )}
                 </div>
 
@@ -331,9 +342,7 @@ function Preview() {
                     />
                   </div>
                   {errorInregestration.fullname && (
-                    <small className="text-danger">
-                       Full name is required
-                    </small>
+                    <small className="text-danger">Full name is required</small>
                   )}
                 </div>
               </div>
@@ -357,10 +366,10 @@ function Preview() {
                 />
               </div>
               {errorInregestration.contactnumber && (
-                    <small className="text-danger">
-                      Contact number is required
-                    </small>
-                  )}
+                <small className="text-danger">
+                  Contact number is required
+                </small>
+              )}
 
               <div className="row">
                 <div className="col-lg-6">
@@ -409,7 +418,7 @@ function Preview() {
                   </div>
                 </div>
 
-                <div className="col-lg-6">
+                <div className="col-lg-4">
                   <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">
                       Civil Status
@@ -426,7 +435,7 @@ function Preview() {
                   </div>
                 </div>
 
-                <div className="col-lg-6">
+                <div className="col-lg-4">
                   <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">
                       Applying as a course owner
@@ -434,6 +443,23 @@ function Preview() {
                     <input
                       type="text"
                       value={credentials.applyingasacourseowner}
+                      disabled
+                      class="form-control preview-input-filled"
+                      id="dateofbirth"
+                      name="dateofbirth"
+                      aria-describedby="emailHelp"
+                    />
+                  </div>
+                </div>
+
+                <div className="col-lg-4">
+                  <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">
+                      Applying as a admin
+                    </label>
+                    <input
+                      type="text"
+                      value={credentials.applyasadmin}
                       disabled
                       class="form-control preview-input-filled"
                       id="dateofbirth"
@@ -455,8 +481,7 @@ function Preview() {
                 <input
                   type="text"
                   class="form-control preview-input-filled"
-                  //   value={resumeupload.name}
-                  disabled
+                   disabled
                   name="uploadresume"
                   id="uploadresume"
                 />
@@ -474,8 +499,7 @@ function Preview() {
                     </label>
                     <input
                       type="text"
-                      //   value={imageUpload.name}
-                      disabled
+                       disabled
                       class="form-control preview-input-filled"
                       name="profilephoto"
                       id="profilephoto"
@@ -494,7 +518,6 @@ function Preview() {
                     </label>
                     <input
                       type="text"
-                      // value={aadharupload.name}
                       disabled
                       class="form-control preview-input-filled"
                       name="aadharcard"
@@ -519,6 +542,7 @@ function Preview() {
                     credentials.nationality,
                     credentials.employedstatus,
                     credentials.applyingasacourseowner,
+                    credentials.applyasadmin,
                     aadharupload,
                     imageUpload,
                     resumeupload

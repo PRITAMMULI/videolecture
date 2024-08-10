@@ -4,6 +4,7 @@ import PersonalInfo from "./component/Authetication/Signup/PersonalInfo";
 import Preview from "./component/Authetication/Signup/Preview";
 import RegestrationForm from "./component/Authetication/Signup/RegestrationForm";
 import UserSignup from "./component/Authetication/Signup/UserSignup";
+import AddaContent from "./component/ContentSection/AddaContent";
 import Projectstate from "./component/context/Projectstate";
 import logo from "./logo.svg";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -27,13 +28,14 @@ function App() {
       <Router>
         <Projectstate>
           <Routes>
+            <Route exact path="/" element={<AddaContent />} />
+            {/* <Route exact path="/" element={<Loginuser />} /> */}
             <Route
               exact
               path="/usersignup"
               element={<UserSignup stepConfig={check_out_step} />}
             />
             <Route exact path="/ownerlogin" element={<Ownerlogin />} />
-            <Route exact path="/" element={<Loginuser />} />
           </Routes>
         </Projectstate>
       </Router>{" "}

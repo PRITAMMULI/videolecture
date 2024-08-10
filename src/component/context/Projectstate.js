@@ -5,7 +5,7 @@ import { getAuth } from "firebase/auth";
 import { db, storage } from "./Firebase";
 import { v4 } from "uuid";
 import { ref, uploadBytes } from "firebase/storage";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, getDoc, getDocs } from "firebase/firestore";
 import {
   signInWithEmailAndPassword,
   signInWithPopup,
@@ -21,6 +21,16 @@ function Projectstate(props) {
     email: false,
     password: false,
   });
+
+  const [content, setContent] = useState({
+    email: "",
+    mainSubject: "",
+    newtopicname: "",
+    newlink: "",
+  });
+
+  const [contents, setContents] = useState([]);
+  const [showContentForm, setShowContentForm] = useState(false);
 
   const [errorInregestration, setErrorInregestration] = useState({
     fullname: false,
@@ -50,6 +60,7 @@ function Projectstate(props) {
     nationality: "India",
     employedstatus: "unemployed",
     applyingasacourseowner: "no",
+    applyasadmin: "no",
   });
   const [imageUpload, setImageUpload] = useState(null);
   const [aadharupload, setAadharupload] = useState(null);
@@ -62,6 +73,76 @@ function Projectstate(props) {
     marginLeft: 0,
     marginRight: 0,
   });
+
+  const [editContent, setEditContent] = useState(null);
+
+  const [errorIncontentupload, seterrorincontentupload] = useState({
+    email: false,
+    mainSubject: false,
+  });
+
+  const [errorinsubcontent, seterrorinsubcontent] = useState({
+    newlink: false,
+    newtopicname: false,
+    newsubcontent: false,
+  });
+
+  const checkWhileAddingSubContent = (subcontent, newtopicname, newlink) => {
+    const newtopicnameErrorinContent = newtopicname.trim() == "";
+    const newlinkErrorinContent = newlink.trim() == "";
+    const newSubContenterror = subcontent.trim() == "";
+
+    seterrorinsubcontent({
+      newtopicname: newtopicnameErrorinContent,
+      newlink: newlinkErrorinContent,
+      newsubcontent: newSubContenterror,
+    });
+
+    if (
+      !newtopicnameErrorinContent &&
+      !newlinkErrorinContent &&
+      !newSubContenterror
+    ) {
+      handleAddContent();
+    } else {
+      toast.error("Every filed is important", {
+        position: "top-center",
+        theme: "colored",
+      });
+    }
+  };
+
+  const editAddedData = (id) => {};
+
+  // const handleSubmit = (e) => {
+  //   const formData = {
+  //     email: localStorage.getItem("email"),
+  //     mainSubject: localStorage.getItem("mainSubject"),
+  //     contents,
+  //   };
+  //   console.log("Form Data: ", formData);
+  // };
+
+  const checkWhileAddingContent = (email, mainsubject, content) => {
+    const emailErrorinContent = email.trim() == "";
+    const mainsubjectErrorinContent = mainsubject.trim() == "";
+
+    seterrorincontentupload({
+      email: emailErrorinContent,
+      mainSubject: mainsubjectErrorinContent,
+    });
+
+    if (
+      !emailErrorinContent &&
+      !mainsubjectErrorinContent &&
+      content.length != 0
+    ) {
+      alert("ok");
+      AddContent(email, mainsubject, content)
+    } else {
+      alert("not ok");
+    }
+  };
 
   const [google_loginValue, setGoogleLoginValue] = useState("");
   const navigate = useNavigate();
@@ -85,6 +166,7 @@ function Projectstate(props) {
   };
 
   const onChange = (e) => {
+    console.log(e.target.name, e.target.value);
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
   const handleLogin = async (email, password) => {
@@ -152,10 +234,26 @@ function Projectstate(props) {
     nationality,
     employedstatus,
     applyingasacourseowner,
+    applyasadmin,
     aadharupload,
     imageupload,
     resumeupload
   ) => {
+    console.log(
+      fullname,
+      email,
+      password,
+      cpassword,
+      dateofbirth,
+      contactnumber,
+      nationality,
+      employedstatus,
+      applyingasacourseowner,
+      applyasadmin,
+      aadharupload,
+      imageupload,
+      resumeupload
+    );
     const emailError = email.trim() == "";
     const passwordShouldcontail = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/;
     passwordShouldcontail.test(password);
@@ -196,6 +294,7 @@ function Projectstate(props) {
       !errorInphotoUpload
     ) {
       if (password == cpassword) {
+        alert("ok");
         handleSignup(
           email,
           password,
@@ -204,7 +303,8 @@ function Projectstate(props) {
           contactnumber,
           nationality,
           employedstatus,
-          applyingasacourseowner
+          applyingasacourseowner,
+          applyasadmin
         );
       } else {
         toast.error("Password is not matching", {
@@ -333,10 +433,98 @@ function Projectstate(props) {
       });
     });
   };
+
+  const handleAddContent = () => {
+    setContents([
+      ...contents,
+      {
+        subContent: content.subContent,
+        topicName: content.newtopicname,
+        link: content.newlink,
+      },
+    ]);
+    setContent("");
+    setShowContentForm(false);
+  };
+
+  const onAddContentChange = (e) => {
+    console.log(e.target.name, e.target.value);
+    setContent({ ...content, [e.target.name]: e.target.value });
+  };
+
+  const handleUpdateContent = () => {
+    const updatedContents = [...contents];
+    updatedContents[editContent.index] = {
+      subContent: editContent.subContent,
+      topicName: editContent.topicName,
+      link: editContent.link,
+    };
+    setContents(updatedContents);
+    setEditContent(null);
+  };
+
+  const handleEditClick = (contentToEdit, index) => {
+    setEditContent({ ...contentToEdit, index });
+  };
+
+  const handleEditChange = (e) => {
+    setEditContent({
+      ...editContent,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleDeleteContent = (index) => {
+    const updatedContents = contents.filter((_, i) => i !== index);
+    setContents(updatedContents);
+  };
+
+  const AddToContentCollectionRef = collection(db, "content");
+
+  const Add_a_content_collection = (newcontent) => {
+    return addDoc(AddToContentCollectionRef, newcontent);
+  };
+  const AddContent = async (email, mainSubject, content) => {
+    const new_Content = {
+      email,
+      mainSubject,
+      content,
+    };
+
+    try {
+      await Add_a_content_collection(new_Content);
+      toast.success(`Your content is added`, {
+        position: "top-center",
+        theme: "colored",
+      });
+     } catch (error) {
+      console.log("error", error);
+    }
+  };
+
+  const getAllProduct = () => {
+    return getDocs(AddToContentCollectionRef);
+  };
   return (
     <>
       <ProjectContext.Provider
         value={{
+          setEditContent,
+          editContent,
+          handleEditClick,
+          handleEditChange,
+          handleDeleteContent,
+          handleUpdateContent,
+          checkWhileAddingSubContent,
+          checkWhileAddingContent,
+          onAddContentChange,
+          contents,
+          setContents,
+          handleAddContent,
+          showContentForm,
+          setShowContentForm,
+          content,
+          setContent,
           margin,
           currentStep,
           isComplete,
